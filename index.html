@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <title>雑記なblogです</title>
+  <link id="favicon" rel="icon" type="image/png" href="">
+
+<script>
+  const icons = [
+    "https://images.kpop.moe/icon/39saku_chan_1734693500_3527187187559813269_3720950457.jpeg",
+    "https://images.kpop.moe/icon/456887693_1740842250055033_6068968287026008525_n.jpeg",
+    "https://images.kpop.moe/icon/518402336_18067031039587664_157234335343356563_n.jpg",
+    "https://images.kpop.moe/icon/IMG_0271.PNG",
+    "https://images.kpop.moe/icon/Ruka by BABYMONSTER.jpg",
+    "https://images.kpop.moe/icon/artworks-59dyMwDyogqx9Ek5-ARBsSQ-t500x500.jpg",
+    "https://images.kpop.moe/icon/babymonster_ygofficial_1685274758_3112632733234195029_28938545439.jpg",
+    "https://images.kpop.moe/icon/babymonster_ygofficial_1685408414_3113753924440405731_28938545439.jpg",
+    "https://images.kpop.moe/icon/babymonster_ygofficial_1722913226_3428367090045224813_28938545439.jpg",
+    "https://images.kpop.moe/icon/bcea07fcd6910fe467599f9d9069d5c0.jpg",
+    "https://images.kpop.moe/icon/fallingin__fall_1718102607_3388012687883041609_63029029806.jpg",
+    "https://images.kpop.moe/icon/for_everyoung10_1760366634_3742549041734569747_47598283663.jpg",
+    "https://images.kpop.moe/icon/hearts2hearts_1756188016_3707496255947948380_71826772894.jpg",
+    "https://images.kpop.moe/icon/iamfinethankyouandryu_1749025717_3647414541845753341_64512173450.jpg",
+    "https://images.kpop.moe/icon/iamfinethankyouandryu_1749989319_3655497818028604263_64512173450.jpg",
+    "https://images.kpop.moe/icon/imnotningning_1716544057_3374938621365680803_59661987299.jpg",
+    "https://images.kpop.moe/icon/imnotningning_1725259311_3448047475507487872_59661987299.jpg",
+    "https://images.kpop.moe/icon/jenaissante_1762495679_3760408766434076519_54361831717.jpeg",
+    "https://images.kpop.moe/icon/katarinabluu_1743945510_3604798675949797954_59495472804.jpg",
+    "https://images.kpop.moe/icon/liz.yeyo_1724752590_3443796790708158386_63498450345.jpg",
+    "https://images.kpop.moe/icon/pin_183732859793860430_33.jpg",
+    "https://images.kpop.moe/icon/pin_30680841205820023_31.jpg",
+    "https://images.kpop.moe/icon/pin_912541943239601919_11.jpg",
+    "https://images.kpop.moe/icon/weverse_0-280651428.jpg",
+    "https://images.kpop.moe/icon/weverse_0-295024258.jpg",
+    "https://images.kpop.moe/icon/weverse_1-263067121.jpg",
+    "https://images.kpop.moe/icon/weverse_1-292478715.jpg",
+    "https://images.kpop.moe/icon/yuqisong.923_1743412400_3600326625304306136_47820189166.jpg",
+
+  ];
+
+  const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+
+  const favicon = document.getElementById("favicon");
+  favicon.href = randomIcon;
+</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>blog.kpop.moe</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    body {
+      background: #111;
+      color: #eee;
+      line-height: 1.7;
+      padding: 20px;
+    }
+    header {
+      text-align: center;
+      padding: 40px 0;
+    }
+    header h1 {
+      font-size: 2.6rem;
+      font-weight: 700;
+    }
+    header p {
+      color: #aaa;
+      margin-top: 10px;
+    }
+    .posts {
+      max-width: 900px;
+      margin: 40px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .post-card {
+      background: #1a1a1a;
+      padding: 22px;
+      border-radius: 12px;
+      border: 1px solid #333;
+      transition: 0.25s;
+    }
+    .post-card:hover {
+      border-color: #555;
+      transform: translateY(-3px);
+    }
+    .post-title {
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: #fff;
+      text-decoration: none;
+    }
+    .post-title:hover {
+      color: #7bc9ff;
+    }
+    .date {
+      font-size: 0.85rem;
+      color: #888;
+      margin-top: 6px;
+    }
+    footer {
+      text-align: center;
+      padding: 50px 0;
+      color: #555;
+      font-size: 0.9rem;
+    }
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>blog.kpop.moe</h1>
+    <p>K-POP・日常・技術メモなどの雑記ブログ</p>
+  </header>
+
+  <main class="posts">
+    <!-- 記事カード例（Markdown→HTMLで増やしていく） -->
+    <article class="post-card">
+      <a class="post-title" href="">やっとドメインkpop.moeをゲットできました</a>
+      <div class="date">2025-11-30</div>
+    </article>
+
+    <article class="post-card">
+      <a class="post-title" href="">漸くブログ記事用の環境を整備しました</a>
+      <div class="date">2025-12-08</div>
+    </article>
+
+    <article class="post-card">
+      <a class="post-title" href="lesserafim-install/index.html">Markdownで試しに書いた</a>
+      <div class="date">2025-12-08</div>
+    </article>
+  </main>
+
+  <footer>
+    © 2025 kpop.moe,blog.kpop.moe for 39dbh_arai
+  </footer>
+</body>
+</html>
