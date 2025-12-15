@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+              <link rel="icon" href="https://image.kpop.moe/icon.webp" sizes="32x32">
+  <title>copypartyのsslに死にかけた話</title>
+  <meta name="description" content="copypartyのsslに死にかけた話">
+  <meta property="og:image" content="https://images.kpop.moe/blog3/weverse_3-287985289.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="vs.css" />     
+        </head>
+        <body class="vscode-body vscode-light">
+            <h2 id="copypartyのsslに死にかけた話回のと前追記">copypartyのsslに死にかけた話回のと前追記</h2>
+<h3 id="環境">環境</h3>
+<ul>
+<li>nginx proxy manager (以下npmとする)</li>
+<li>dockerのcopyparty</li>
+</ul>
+<h3 id="エラー内容とゴタゴタ">エラー内容とゴタゴタ</h3>
+<p><img src="file:////Users/arai/git/cloudflare/blog/copyparty-addendum/error.jpg" alt="パワー!!! ヤー!!!"></p>
+<pre><code>rejected by cors-check (see serverlog)
+URL:
+</code></pre>
+<p>こんな内容で</p>
+<p>とりあえずgoogle先生に聞いたら</p>
+<p><a href="https://serverfault.com/questions/1195829/nginx-request-rejected-by-cors-check">Nginx Request Rejected By Cors Check</a></p>
+<p>ってのがヒット</p>
+<p>まんまの内容で「即解決きちゃぁ」って思い、書いてある通りに設定してみたら、なぜかエラーは治らず</p>
+<p>dockerのエラー内容の確認を怠っていたので見てみると</p>
+<pre><code>got header &quot;x-forwarded-for&quot; from untrusted source &quot;192.168.5.2&quot; claiming the true client ip is &quot;192.168.5.2&quot;
+
+could not determine the client's IP-address because the global-option --rproxy has not been configured
+
+WARN: http403: rejected by cors-check (see serverlog), '/'
+</code></pre>
+<p>割と要点のみに絞りましたががずらっと</p>
+<p>chatgpt先輩に聞けばproxyの設定が上手く行ってないのと</p>
+<p>クライアントipが正しく認識できてないよとのこと</p>
+<h3 id="本題">本題</h3>
+<p>とりあえずcompose.ymlを見てほしい</p>
+<pre><code class="language-docker">services:
+  copyparty:
+    image: copyparty/ac:latest
+    container_name: copyparty
+    <span class="hljs-keyword">user</span>: <span class="hljs-string">&quot;1000:1000&quot;</span>
+    restart: unless-stopped
+    ports:
+      - <span class="hljs-number">3923</span>:<span class="hljs-number">3923</span>
+    volumes:
+      - ./cfg:/cfg
+      - /srv/local:/srv/local:rw
+      - /srv/media:/srv/media:ro
+      - /srv/images:/srv/images:ro
+    environment:
+      LD_PRELOAD: /usr/lib/libmimalloc-secure.so.NOPE
+      PYTHONUNBUFFERED: <span class="hljs-number">1</span>
+    command: [
+      <span class="hljs-string">&quot;python3&quot;</span>, <span class="hljs-string">&quot;-m&quot;</span>, <span class="hljs-string">&quot;copyparty&quot;</span>,
+      <span class="hljs-string">&quot;--origins=copyparty.39dbh.duckdns.org&quot;</span>,
+      <span class="hljs-string">&quot;--rproxy&quot;</span>, <span class="hljs-string">&quot;-1&quot;</span>,
+      <span class="hljs-string">&quot;--xff-src=lan&quot;</span>,
+      <span class="hljs-string">&quot;--xff-hdr=x-forwarded-for&quot;</span>
+    ]
+    stop_grace_period: <span class="hljs-number">15</span>s
+    <span class="hljs-keyword">healthcheck</span><span class="language-bash">:</span>
+      test: [<span class="hljs-string">&quot;CMD-SHELL&quot;</span>, <span class="hljs-string">&quot;wget --spider -q 127.0.0.1:3923/?reset=/._&quot;</span>]
+      interval: <span class="hljs-number">1</span>m
+      timeout: <span class="hljs-number">2</span>s
+      retries: <span class="hljs-number">5</span>
+      start_period: <span class="hljs-number">15</span>s
+</code></pre>
+<p>恐ろしく変わってしまった</p>
+<p>次にcopyparty.conf</p>
+<pre><code class="language-YAML">[<span class="hljs-string">global</span>]
+  <span class="hljs-attr">hist:</span> <span class="hljs-string">/cfg/hists/</span>
+  <span class="hljs-string">e2ts,</span> <span class="hljs-string">e2dsa</span>
+  <span class="hljs-attr">acao:</span> <span class="hljs-string">https://copyparty.39dbh.duckdns.org</span>
+  <span class="hljs-attr">rproxy:</span> <span class="hljs-number">443</span>
+
+[<span class="hljs-string">accounts</span>]
+  <span class="hljs-attr">user:</span> <span class="hljs-string">password</span>
+
+[<span class="hljs-string">/localUP</span>]
+  <span class="hljs-string">/srv/local</span>
+  <span class="hljs-attr">accs:</span>
+    <span class="hljs-attr">rwmd:</span> <span class="hljs-string">user</span>
+
+[<span class="hljs-string">/images</span>]
+  <span class="hljs-string">/srv/images</span>
+  <span class="hljs-attr">accs:</span>
+    <span class="hljs-attr">r:</span> <span class="hljs-string">user</span>
+
+[<span class="hljs-string">/media</span>]
+  <span class="hljs-string">/srv/media</span>
+  <span class="hljs-attr">accs:</span>
+    <span class="hljs-attr">r:</span> <span class="hljs-string">user</span>
+</code></pre>
+<p>今回のMVPは</p>
+<pre><code>  acao: https://copyparty.39dbh.duckdns.org
+  rproxy: 443
+</code></pre>
+<p>である</p>
+<h3 id="npmの設定">npmの設定</h3>
+<p><code>Block Common Exploits</code>と<code>Websockets Support</code>をONに</p>
+<pre><code class="language-YAML"><span class="hljs-comment"># copyparty に正しいヘッダを渡す（これがないと Origin が合わない）</span>
+<span class="hljs-string">proxy_set_header</span> <span class="hljs-string">Host</span> <span class="hljs-string">$host;</span>
+<span class="hljs-string">proxy_set_header</span> <span class="hljs-string">X-Forwarded-Proto</span> <span class="hljs-string">$scheme;</span>
+<span class="hljs-string">proxy_set_header</span> <span class="hljs-string">X-Forwarded-Host</span> <span class="hljs-string">$host;</span>
+
+<span class="hljs-comment"># ログイン時の POST で CORS エラー回避</span>
+<span class="hljs-string">proxy_hide_header</span> <span class="hljs-string">Access-Control-Allow-Origin;</span>
+</code></pre>
+<p>を追加</p>
+<hr>
+<h3 id="参考文献-ってわけでもないが">参考文献. ってわけでもないが</h3>
+<ul>
+<li>公式git : <a href="https://github.com/9001/copyparty">https://github.com/9001/copyparty</a></li>
+</ul>
+<h6 id="さすが公式gitなだけあってなっげぇのである">さすが公式gitなだけあってなっげぇのである</h6>
+<ul>
+<li>dockerの設定 : <a href="https://github.com/9001/copyparty/tree/hovudstraum/docs/examples/docker/basic-docker-compose">https://github.com/9001/copyparty/tree/hovudstraum/docs/examples/docker/basic-docker-compose</a></li>
+</ul>
+<h6 id="を参考に頑張った形になる-正直これだけで良い気もする">を参考に頑張った形になる. 正直これだけで良い気もする</h6>
+<ul>
+<li>本人なのかわからないが : <a href="https://www.youtube.com/watch?v=15_-hgsX2V0">https://www.youtube.com/watch?v=15_-hgsX2V0</a></li>
+</ul>
+<h6 id="設定関連がわかりやすく解説されている英語">設定関連がわかりやすく解説されている(英語)</h6>
+<ul>
+<li>Nginx Request Rejected By Cors Check : <a href="https://serverfault.com/questions/1195829/nginx-request-rejected-by-cors-check">https://serverfault.com/questions/1195829/nginx-request-rejected-by-cors-check</a></li>
+</ul>
+<h6 id="こっちにも貼っておく">こっちにも貼っておく</h6>
+<hr>
+<h3 id="最後に">最後に</h3>
+<p>休憩を挟んでも相当な時間と労力がかかりました。</p>
+<p>12時ちょっと前ぐらいから初めて休憩挟みつつ今が24時超えた ...</p>
+<h6 id="日を跨いでしまった">日を跨いでしまった</h6>
+<h4 id="かかりすぎである">かかりすぎである</h4>
+
+            <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+            
+        </body>
+        </html>
