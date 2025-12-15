@@ -1,0 +1,108 @@
+/* ===== VSCode Dark+ Theme for Markdown ===== */
+
+body {
+  max-width: 860px;
+  margin: 40px auto;
+  padding: 0 20px;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.7;
+  font-size: 18px;
+}
+
+/* Headings */
+h1, h2, h3, h4 {
+  color: #ffffff;
+  border-bottom: 1px solid #333;
+  padding-bottom: 6px;
+  margin-top: 2em;
+  font-weight: 600;
+}
+
+/* Links */
+a {
+  color: #4fc1ff;
+}
+a:hover {
+  color: #82d9ff;
+}
+
+/* Code block style */
+pre {
+  background: #1e1e1e;
+  padding: 14px;
+  border-radius: 6px;
+  overflow-x: auto;
+  border: 1px solid #333;
+}
+
+code {
+  background: #252526;
+  color: #dcdcaa;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-family: "JetBrains Mono", "Consolas", monospace;
+}
+
+/* Syntax highlighting (VSCode Dark+ colors) */
+pre code .keyword { color: #569cd6; }
+pre code .string { color: #ce9178; }
+pre code .number { color: #b5cea8; }
+pre code .function { color: #dcdcaa; }
+pre code .comment { color: #6a9955; }
+
+/* Blockquote */
+blockquote {
+  border-left: 4px solid #007acc;
+  background: #252526;
+  padding: 10px 20px;
+  margin: 1.6em 0;
+  color: #c0c0c0;
+}
+
+/* Lists */
+ul, ol {
+  padding-left: 30px;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+}
+
+th, td {
+  border: 1px solid #333;
+  padding: 8px 12px;
+}
+
+th {
+  background: #252526;
+  color: #fff;
+}
+
+/* Horizontal rule */
+hr {
+  border: none;
+  border-top: 1px solid #444;
+  margin: 2em 0;
+}
+/* Images */
+img {
+  display: block;            /* 文章の流れから独立して見やすい */
+  max-width: 100%;           /* 画面の幅を超えない */
+  height: auto;              /* アスペクト比維持 */
+  margin: 20px auto;         /* 上下の余白 + 中央寄せ */
+  border-radius: 8px;        /* 角を軽く丸めて綺麗に */
+  border: 1px solid #333;    /* VSCode Dark+ に馴染む枠線 */
+}
+
+/* 同じサイズにそろえたい場合（任意） */
+img.uniform {
+  width: 600px;              /* 統一幅（好きに変更可） */
+  max-width: 100%;           /* 小さい画面では縮む */
+  height: auto;
+}
+

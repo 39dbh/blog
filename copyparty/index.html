@@ -1,0 +1,60 @@
+<link rel="stylesheet" href="vs.css" />
+  <head>
+  <link rel="icon" href="https://images.kpop.moe/blog3/mbid-6083cc6b-fc30-4109-bc7d-c73bff667b73-34705295510.jpg" sizes="32x32">
+  <title>opypartyをinstallして推しを眺める</title>
+  <meta name="description" content="UbuntuにLE SSERAFIMをinstallする方法">
+  <meta property="og:image" content="https://image.kpop.moe/icon.webp">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<h1
+id="copypartyをinstallして推しを眺める">copypartyをinstallして推しを眺める</h1>
+<h3 id="dockerを使います">※dockerを使います</h3>
+<pre><code>mkdir copyparty</code></pre>
+<p>compose.yml</p>
+<pre class="docker"><code>services:
+  copyparty:
+    image: copyparty/ac
+    container_name: copyparty
+    restart: unless-stopped
+    user: &quot;1000:1000&quot;
+
+    ports:
+      - &quot;3923:3923&quot;
+
+    volumes:
+      - ./cfg:/cfg
+      - /srv/up/:/srv/up:rw
+      - /srv/images:/srv/images:ro</code></pre>
+<pre><code>mkdir -p ./cfg/hists/</code></pre>
+<pre><code>sudo nano copyparty.conf</code></pre>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="at">global</span><span class="kw">]</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hist</span><span class="kw">:</span><span class="at"> /cfg/hists/</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">  e2ts, e2dsa</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="at">accounts</span><span class="kw">]</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">user</span><span class="kw">:</span><span class="at"> password</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="at">/up</span><span class="kw">]</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="at">  /srv/up</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">accs</span><span class="kw">:</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">rwmd</span><span class="kw">:</span><span class="at"> user</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="kw">[</span><span class="at">/images</span><span class="kw">]</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="at">  /srv/images</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">accs</span><span class="kw">:</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">r</span><span class="kw">:</span><span class="at"> user</span></span></code></pre></div>
+<h4 id="解説として">解説として</h4>
+<p><code>/cfg/hists/</code>これは<code>volumes</code>で指定したディレクトリを扱うので<code>mkdir -p ./cfg/hists/</code>を実行しることを忘れないようにしておきましょう</p>
+<p><code>user: password</code>でパスワードをゴニョゴニョしてくださいね</p>
+<p><code>[/up]</code>ここは表示名</p>
+<p><code>/srv/up</code>使用するディレクトリ</p>
+<p><code>: user</code>使用するユーザを指定する</p>
+<p><code>rwmd</code>書き込み許可</p>
+<p>逆に<code>r:</code>は読み込みのみってことですね</p>
+<hr />
+<h3 id="nginx-prxy-manager">Nginx Prxy Manager</h3>
+<p>とは言っても<code>Websockets Support</code>をONにすればいいだけなので</p>
+<hr />
+<p>割とあっさりとできるのが利点で良いですね</p>
+<p>ProxmoxのLXCコンテナで運用してますがリソースは食わないのでLXCで良さそうですね</p>
